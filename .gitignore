@@ -13,8 +13,7 @@
 **/*.rs.bk
 .cargo-ok
 
-# Installer artifacts
-/latest.json
+# Installer artifacts (latest.json is the public manifest — keep it)
 *.tar.gz
 *.zip
 sha256sums.txt
@@ -77,6 +76,9 @@ logs/
 # Local agent / Cursor
 .cursor/
 .claude/
+
+# Local workspace state created by `qat spec init`
+.qat/
 
 # Internal research dumps — not part of the public product
 Que se necesita para construir un harness_ Para ia.md

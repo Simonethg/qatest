@@ -1,0 +1,42 @@
+[package]
+name = "qat"
+version = "0.1.0"
+edition = "2021"
+description = "The agent runtime for QA. Same install as an agent multiplexer. A workspace that already knows spec, tests, evals, and review."
+license-file = "LICENSE"
+repository = "https://github.com/Simonethg/qat"
+homepage = "https://github.com/Simonethg/qat"
+readme = "README.md"
+authors = ["Simoneth Gomez"]
+keywords = ["qa", "tui", "testing", "istqb"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "qat"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+base64 = "0.22"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
+clap = { version = "4", features = ["derive"] }
+crossterm = { version = "0.28", features = ["event-stream"] }
+dirs = "6"
+hostname = "0.4"
+portable-pty = "0.8"
+ratatui = "0.29"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+ureq = { version = "2", default-features = false, features = ["tls"] }
+vt100 = "0.15"
+which = "7"
+unicode-width = "0.2"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

@@ -1,0 +1,86 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: aarch64-apple-darwin
+            asset: qat-macos-aarch64
+          - os: macos-13
+            target: x86_64-apple-darwin
+            asset: qat-macos-x86_64
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            asset: qat-linux-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo build --release --locked --target ${{ matrix.target }}
+      - run: cp "target/${{ matrix.target }}/release/qat" "${{ matrix.asset }}"
+      - run: shasum -a 256 "${{ matrix.asset }}" | tee "${{ matrix.asset }}.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: |
+            ${{ matrix.asset }}
+            ${{ matrix.asset }}.sha256
+
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Assemble latest.json
+        run: |
+          python3 << 'PY'
+          import hashlib, json, os, pathlib
+          root = pathlib.Path("dist")
+          assets, sha = {}, {}
+          mapping = {
+            "qat-macos-aarch64": "macos-aarch64",
+            "qat-macos-x86_64": "macos-x86_64",
+            "qat-linux-x86_64": "linux-x86_64",
+          }
+          version = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          for name, key in mapping.items():
+              matches = list(root.rglob(name))
+              if not matches:
+                  continue
+              p = matches[0]
+              digest = hashlib.sha256(p.read_bytes()).hexdigest()
+              url = f"https://github.com/Simonethg/qat/releases/download/v{version}/{name}"
+              assets[key] = url
+              sha[key] = digest
+          doc = {
+            "version": version,
+            "protocol": 1,
+            "endpoint_generation": 1,
+            "notes": "See GitHub release notes.",
+            "assets": assets,
+            "sha256": sha,
+            "releases": {},
+          }
+          pathlib.Path("latest.json").write_text(json.dumps(doc, indent=2) + "\n")
+          print(json.dumps(doc, indent=2))
+          PY
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/**/qat-*
+            latest.json

@@ -1,0 +1,25 @@
+{
+  "version": "0.1.0",
+  "protocol": 1,
+  "endpoint_generation": 1,
+  "notes": "First public cut. Native TUI, five QA tabs, PTY server that survives detach. Source-available (Apache-2.0 WITH Commons Clause). Powered by AcademiaQA.",
+  "assets": {
+    "macos-aarch64": "https://github.com/Simonethg/qat/releases/download/v0.1.0/qat-macos-aarch64"
+  },
+  "sha256": {
+    "macos-aarch64": "eb5cc657efb9483e1d08e65962ad6c18fcfec562c35f4a5635b46427a4cdcefc"
+  },
+  "releases": {
+    "0.1.0": {
+      "notes": "First public cut. Native TUI, five QA tabs, PTY server that survives detach.",
+      "protocol": 1,
+      "endpoint_generation": 1,
+      "assets": {
+        "macos-aarch64": "https://github.com/Simonethg/qat/releases/download/v0.1.0/qat-macos-aarch64"
+      },
+      "sha256": {
+        "macos-aarch64": "eb5cc657efb9483e1d08e65962ad6c18fcfec562c35f4a5635b46427a4cdcefc"
+      }
+    }
+  }
+}
