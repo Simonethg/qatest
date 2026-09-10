@@ -30,4 +30,4 @@ Probed, not assumed. Environment lives in the App tab.
 
 ## Notes
 
-`status` must be `approved` before Review can pass. Each `A-###` must map to a test or an eval. qat does not generate tests unless you install `qat-builder` (plugin, optional).
+`status` must be `approved` before Review can pass. Each `A-###` must map to a test or an eval. qatest does not generate tests unless you install `qatest-builder` (plugin, optional).

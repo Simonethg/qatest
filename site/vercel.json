@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/install.sh", "destination": "/install.sh" },
+    { "source": "/latest.json", "destination": "/latest.json" }
+  ],
+  "headers": [
+    {
+      "source": "/install.sh",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    }
+  ]
+}

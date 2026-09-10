@@ -1,4 +1,4 @@
-//! qat — the agent runtime for QA.
+//! qatest — the agent runtime for QA.
 
 pub mod agent_state;
 pub mod axe;

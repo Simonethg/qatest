@@ -15,13 +15,13 @@ jobs:
         include:
           - os: macos-14
             target: aarch64-apple-darwin
-            asset: qat-macos-aarch64
+            asset: qatest-macos-aarch64
           - os: macos-13
             target: x86_64-apple-darwin
-            asset: qat-macos-x86_64
+            asset: qatest-macos-x86_64
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
-            asset: qat-linux-x86_64
+            asset: qatest-linux-x86_64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
         with:
           targets: ${{ matrix.target }}
       - run: cargo build --release --locked --target ${{ matrix.target }}
-      - run: cp "target/${{ matrix.target }}/release/qat" "${{ matrix.asset }}"
+      - run: cp "target/${{ matrix.target }}/release/qatest" "${{ matrix.asset }}"
       - run: shasum -a 256 "${{ matrix.asset }}" | tee "${{ matrix.asset }}.sha256"
       - uses: actions/upload-artifact@v4
         with:
@@ -53,9 +53,9 @@ jobs:
           root = pathlib.Path("dist")
           assets, sha = {}, {}
           mapping = {
-            "qat-macos-aarch64": "macos-aarch64",
-            "qat-macos-x86_64": "macos-x86_64",
-            "qat-linux-x86_64": "linux-x86_64",
+            "qatest-macos-aarch64": "macos-aarch64",
+            "qatest-macos-x86_64": "macos-x86_64",
+            "qatest-linux-x86_64": "linux-x86_64",
           }
           version = os.environ["GITHUB_REF_NAME"].lstrip("v")
           for name, key in mapping.items():
@@ -64,7 +64,7 @@ jobs:
                   continue
               p = matches[0]
               digest = hashlib.sha256(p.read_bytes()).hexdigest()
-              url = f"https://github.com/Simonethg/qat/releases/download/v{version}/{name}"
+              url = f"https://github.com/Simonethg/qatest/releases/download/v{version}/{name}"
               assets[key] = url
               sha[key] = digest
           doc = {
@@ -82,5 +82,5 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/qat-*
+            dist/**/qatest-*
             latest.json

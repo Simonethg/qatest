@@ -43,7 +43,7 @@ impl Default for HumanGate {
 }
 
 pub fn human_path(cwd: &Path) -> std::path::PathBuf {
-    cwd.join(".qat").join("review.json")
+    cwd.join(".qatest").join("review.json")
 }
 
 pub fn load_human(cwd: &Path) -> HumanGate {
@@ -54,7 +54,7 @@ pub fn load_human(cwd: &Path) -> HumanGate {
 }
 
 pub fn save_human(cwd: &Path, gate: &HumanGate) -> anyhow::Result<()> {
-    std::fs::create_dir_all(cwd.join(".qat"))?;
+    std::fs::create_dir_all(cwd.join(".qatest"))?;
     std::fs::write(human_path(cwd), serde_json::to_string_pretty(gate)?)?;
     Ok(())
 }
@@ -72,7 +72,7 @@ pub fn compile(
         .unwrap_or_else(|| "missing".into());
 
     match spec {
-        None => blockers.push("spec missing — run qat spec init".into()),
+        None => blockers.push("spec missing — run qatest spec init".into()),
         Some(s) if !s.approved() => blockers.push(format!(
             "spec status is '{}' — ISO 29119 gate needs approved",
             s.status
@@ -88,7 +88,7 @@ pub fn compile(
         blockers.push("EvalHarness has failing cases (lesson 4.3)".into());
     }
     if evals.is_none() {
-        observations.push("no eval-results.json yet — run qat evals run".into());
+        observations.push("no eval-results.json yet — run qatest evals run".into());
     }
 
     let mut axe_block = false;
@@ -109,7 +109,7 @@ pub fn compile(
     }
 
     if !human.approved {
-        blockers.push("human-in-the-loop: qat review approve required (ISO 20246)".into());
+        blockers.push("human-in-the-loop: qatest review approve required (ISO 20246)".into());
     }
 
     let verdict = if blockers.is_empty() {

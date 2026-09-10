@@ -1,18 +1,18 @@
 [package]
-name = "qat"
+name = "qatest"
 version = "0.1.0"
 edition = "2021"
 description = "The agent runtime for QA. Same install as an agent multiplexer. A workspace that already knows spec, tests, evals, and review."
 license-file = "LICENSE"
-repository = "https://github.com/Simonethg/qat"
-homepage = "https://github.com/Simonethg/qat"
+repository = "https://github.com/Simonethg/qatest"
+homepage = "https://github.com/Simonethg/qatest"
 readme = "README.md"
 authors = ["Simoneth Gomez"]
 keywords = ["qa", "tui", "testing", "istqb"]
 categories = ["command-line-utilities", "development-tools"]
 
 [[bin]]
-name = "qat"
+name = "qatest"
 path = "src/main.rs"
 
 [dependencies]

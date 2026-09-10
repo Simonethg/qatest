@@ -1,6 +1,6 @@
 # Standards catalog (gates, not posters)
 
-Every standard qat claims lives in a **tab or a gate**. If it has no gate, it is not applied.
+Every standard qatest claims lives in a **tab or a gate**. If it has no gate, it is not applied.
 
 ## Canonical tabs (ISO/IEC/IEEE 29119-2 process)
 
@@ -17,11 +17,11 @@ Every standard qat claims lives in a **tab or a gate**. If it has no gate, it is
 | Standard | Gate |
 | --- | --- |
 | ISTQB CTFL 4.0 | Spec template: objective, preconditions, acceptance, traceability. |
-| ISTQB CT-TAE | Tests tab hosts automation you already run; qat does not replace the framework. |
+| ISTQB CT-TAE | Tests tab hosts automation you already run; qatest does not replace the framework. |
 | ISTQB CT-AI v1.0 / CT-GenAI 2025 | Evals sit next to the suite (not instead of it). Agents are observed (`blocked/working/done/idle`), not trusted blindly. |
 | ISO/IEC/IEEE 29119-1:2022 concepts | Vocabulary in Spec (`A#`, environment, oracle). |
 | ISO/IEC/IEEE 29119-2:2021 process | The five tabs **are** the process. |
-| ISO/IEC/IEEE 29119-3:2021 documentation | `.qat/spec.md` and Review evidence files. |
+| ISO/IEC/IEEE 29119-3:2021 documentation | `.qatest/spec.md` and Review evidence files. |
 | ISO/IEC/IEEE 29119-4:2021 techniques | Techniques named on each `A#` row when present. |
 | ISO/IEC 25010:2023 | Nine quality characteristics as coverage labels in Tests (`functional suitability`, `performance efficiency`, `compatibility`, `interaction capability`, `reliability`, `security`, `maintainability`, `flexibility`, `safety`). |
 | ISO/IEC 20246 | Review tab: evidence pack, verdict, human sign-off. |
@@ -39,6 +39,6 @@ Applied when the spec `profile` field says so (`us`, `ca`, `latam`, `br`, `payme
 
 ISO/IEC 42001, 22989, 23894, TR 29119-11, TS 42119-2, 27001, 12207, 29119-5, TR 29119-6. TMMi / CMMI as process maturity the harness *teaches*, not an audit on day one.
 
-## Accessibility of qat itself
+## Accessibility of qatest itself
 
-qat is a TUI: keyboard (prefix `Ctrl+b`, tab numbers, pane cycle) plus mouse. Agent state is a word and a mark, not color alone. Gold on ink is the accent. axe-core runs against the **product under test** in Tests, not against the binary. If a web attach ships later, scan that chrome at 390 and 1440.
+qatest is a TUI: keyboard (prefix `Ctrl+b`, tab numbers, pane cycle) plus mouse. Agent state is a word and a mark, not color alone. Gold on ink is the accent. axe-core runs against the **product under test** in Tests, not against the binary. If a web attach ships later, scan that chrome at 390 and 1440.

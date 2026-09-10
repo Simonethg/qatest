@@ -3,13 +3,13 @@ use std::path::PathBuf;
 use anyhow::Context;
 use clap::{Parser, Subcommand};
 
-use qat::protocol::{Request, Response};
-use qat::review::HumanGate;
-use qat::{axe, detect, evals, review, server, spec, tests_recipe, tui, update, VERSION};
+use qatest::protocol::{Request, Response};
+use qatest::review::HumanGate;
+use qatest::{axe, detect, evals, review, server, spec, tests_recipe, tui, update, VERSION};
 
 #[derive(Parser)]
 #[command(
-    name = "qat",
+    name = "qatest",
     version = VERSION,
     about = "The agent runtime for QA. Powered by AcademiaQA.",
     after_help = "Not the Intel accelerator. Not the Qt tester. Source-available: use it, don't sell it."
@@ -117,7 +117,7 @@ enum ReviewCmd {
 
 fn main() {
     if let Err(e) = run() {
-        eprintln!("qat: {e:#}");
+        eprintln!("qatest: {e:#}");
         std::process::exit(1);
     }
 }
@@ -130,12 +130,12 @@ fn run() -> anyhow::Result<()> {
             ServerCmd::Run => server::run_foreground(),
             ServerCmd::Start => {
                 server::spawn_daemon()?;
-                println!("qat server started. run `qat` to attach.");
+                println!("qatest server started. run `qatest` to attach.");
                 Ok(())
             }
             ServerCmd::Stop => {
                 server::stop()?;
-                println!("qat server stopped.");
+                println!("qatest server stopped.");
                 Ok(())
             }
         },

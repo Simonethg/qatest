@@ -54,7 +54,7 @@ impl PtyPane {
         let writer = pair.master.take_writer().context("pty writer")?;
         let pane_id = id.clone();
         std::thread::Builder::new()
-            .name(format!("qat-pty-{pane_id}"))
+            .name(format!("qatest-pty-{pane_id}"))
             .spawn(move || {
                 let mut buf = [0u8; 4096];
                 loop {

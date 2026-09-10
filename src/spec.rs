@@ -31,11 +31,11 @@ impl SpecDoc {
 }
 
 pub fn spec_path(cwd: &Path) -> PathBuf {
-    cwd.join(".qat").join("spec.md")
+    cwd.join(".qatest").join("spec.md")
 }
 
 pub fn init(cwd: &Path) -> anyhow::Result<PathBuf> {
-    let dir = cwd.join(".qat");
+    let dir = cwd.join(".qatest");
     std::fs::create_dir_all(&dir)?;
     let path = dir.join("spec.md");
     if !path.exists() {
@@ -51,7 +51,7 @@ pub fn init(cwd: &Path) -> anyhow::Result<PathBuf> {
 pub fn load(cwd: &Path) -> anyhow::Result<SpecDoc> {
     let path = spec_path(cwd);
     let raw = std::fs::read_to_string(&path)
-        .with_context(|| format!("missing spec at {} — run qat spec init", path.display()))?;
+        .with_context(|| format!("missing spec at {} — run qatest spec init", path.display()))?;
     Ok(parse(&path, &raw))
 }
 

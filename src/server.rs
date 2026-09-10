@@ -58,7 +58,7 @@ pub fn run_foreground() -> anyhow::Result<()> {
     let drain_state = state.clone();
     std::thread::spawn(move || drain_pty(rx, drain_state));
 
-    eprintln!("qat server listening on {}", paths.socket.display());
+    eprintln!("qatest server listening on {}", paths.socket.display());
     for conn in listener.incoming() {
         match conn {
             Ok(stream) => {
@@ -99,7 +99,7 @@ pub fn spawn_daemon() -> anyhow::Result<()> {
         use std::os::unix::process::CommandExt;
         cmd.process_group(0);
     }
-    cmd.spawn().context("spawn qat server")?;
+    cmd.spawn().context("spawn qatest server")?;
 
     for _ in 0..50 {
         if paths.socket.exists() && server_alive(&paths) {
@@ -402,7 +402,7 @@ fn ensure_space(
             "spec-doc",
             TabId::Spec,
             "spec",
-            "cat .qat/spec.md; echo; echo '---'; echo 'edit .qat/spec.md  |  qat spec status'",
+            "cat .qatest/spec.md; echo; echo '---'; echo 'edit .qatest/spec.md  |  qatest spec status'",
         ),
         (
             "spec-shell",
@@ -414,7 +414,7 @@ fn ensure_space(
             "code-agent",
             TabId::Code,
             "agent",
-            "echo Code pane. Run claude / cursor / codex here. qat does not wrap them.",
+            "echo Code pane. Run claude / cursor / codex here. qatest does not wrap them.",
         ),
         (
             "app-sut",
@@ -432,19 +432,19 @@ fn ensure_space(
             "tests-evals",
             TabId::Tests,
             "evals",
-            "echo Evals + axe. qat evals run   |   qat axe --url URL",
+            "echo Evals + axe. qatest evals run   |   qatest axe --url URL",
         ),
         (
             "review-gate",
             TabId::Review,
             "review",
-            "echo Review. qat review status   |   qat review approve",
+            "echo Review. qatest review status   |   qatest review approve",
         ),
         (
             "review-evidence",
             TabId::Review,
             "evidence",
-            "echo Evidence pane. cat .qat/eval-results.json .qat/axe-390.json .qat/axe-1440.json",
+            "echo Evidence pane. cat .qatest/eval-results.json .qatest/axe-390.json .qatest/axe-1440.json",
         ),
     ];
 

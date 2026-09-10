@@ -1,4 +1,4 @@
-qat Source-Available License
+qatest Source-Available License
 Copyright (c) 2026 Simoneth Gomez
 
 This is source-available software. It is not an OSI Open Source license.
@@ -13,7 +13,7 @@ software), a product or service whose value derives, entirely or
 substantially, from the functionality of the software.
 
 Internal use by a company (including for profit) is allowed.
-Charging money for qat itself, a fork of qat, or a hosted qat service is not.
+Charging money for qatest itself, a fork of qatest, or a hosted qatest service is not.
 
 Powered by AcademiaQA.
 
@@ -40,7 +40,7 @@ functionality of the Software. Any license notice or attribution required
 by the License must also include this Commons Clause License Condition
 notice.
 
-Software: qat
+Software: qatest
 License: Apache 2.0
 Licensor: Simoneth Gomez
 

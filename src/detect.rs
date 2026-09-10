@@ -8,7 +8,7 @@ pub struct Detected {
     pub path: String,
 }
 
-/// CLIs the user already runs. qat hosts them; it does not wrap them.
+/// CLIs the user already runs. qatest hosts them; it does not wrap them.
 pub const KNOWN: &[(&str, &str, &str)] = &[
     ("claude", "Claude Code", "agent"),
     ("cursor", "Cursor Agent", "agent"),
@@ -22,11 +22,11 @@ pub const KNOWN: &[(&str, &str, &str)] = &[
     ("bun", "bun", "suite"),
     ("python3", "Python", "suite"),
     ("axe", "axe-core CLI", "a11y"),
-    ("qat-explorer", "qat-explorer", "plugin"),
-    ("qat-builder", "qat-builder", "plugin"),
-    ("qat-runner", "qat-runner", "plugin"),
-    ("qat-debugger", "qat-debugger", "plugin"),
-    ("qat-healer", "qat-healer", "plugin"),
+    ("qatest-explorer", "qatest-explorer", "plugin"),
+    ("qatest-builder", "qatest-builder", "plugin"),
+    ("qatest-runner", "qatest-runner", "plugin"),
+    ("qatest-debugger", "qatest-debugger", "plugin"),
+    ("qatest-healer", "qatest-healer", "plugin"),
 ];
 
 pub fn scan() -> Vec<Detected> {
@@ -47,8 +47,8 @@ pub fn scan() -> Vec<Detected> {
 pub fn format_report(cwd: &Path) -> String {
     let found = scan();
     let mut lines = vec![
-        format!("qat detect  cwd={}", cwd.display()),
-        "Pilar 04: these stay your CLIs. qat is the house.".to_string(),
+        format!("qatest detect  cwd={}", cwd.display()),
+        "Pilar 04: these stay your CLIs. qatest is the house.".to_string(),
         String::new(),
     ];
     if found.is_empty() {
@@ -75,7 +75,7 @@ mod tests {
     fn catalog_includes_plugins_and_pytest() {
         let names: Vec<_> = KNOWN.iter().map(|k| k.0).collect();
         assert!(names.contains(&"pytest"));
-        assert!(names.contains(&"qat-healer"));
+        assert!(names.contains(&"qatest-healer"));
         assert!(names.contains(&"claude"));
     }
 }

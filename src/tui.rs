@@ -300,7 +300,7 @@ fn draw_sidebar(f: &mut Frame, area: Rect, ui: &Ui) {
             tabs.clone(),
         ),
         _ => (
-            "qat".into(),
+            "qatest".into(),
             "…".into(),
             AgentState::Idle,
             Vec::new(),
@@ -310,7 +310,7 @@ fn draw_sidebar(f: &mut Frame, area: Rect, ui: &Ui) {
 
     let mut lines = vec![
         Line::from(Span::styled(
-            " qat",
+            " qatest",
             Style::default().fg(GOLD).add_modifier(Modifier::BOLD),
         )),
         Line::from(Span::styled(" agent runtime for QA", Style::default().fg(MUTED))),
@@ -410,7 +410,7 @@ fn draw_context(f: &mut Frame, area: Rect, ui: &Ui) {
         }) => match tab {
             TabId::Spec => spec_preview.lines().next().unwrap_or("Spec").to_string(),
             TabId::Review => review_preview.lines().next().unwrap_or("Review").to_string(),
-            TabId::Tests => "Tests · suite + evals + axe 390/1440 · qat tests recipe".into(),
+            TabId::Tests => "Tests · suite + evals + axe 390/1440 · qatest tests recipe".into(),
             TabId::Code => "Code · run the agent you already use".into(),
             TabId::App => "App · SUT lives here · detach keeps it running".into(),
         },

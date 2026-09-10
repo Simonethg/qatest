@@ -11,10 +11,9 @@ use crate::paths::Paths;
 use crate::{ENDPOINT_GENERATION, PROTOCOL, VERSION};
 
 const MANIFEST_CANDIDATES: &[&str] = &[
-    "https://qat.sh/latest.json",
-    "https://getqat.dev/latest.json",
-    "https://github.com/Simonethg/qat/releases/latest/download/latest.json",
-    "https://raw.githubusercontent.com/Simonethg/qat/main/latest.json",
+    "https://qatest.sh/latest.json",
+    "https://github.com/Simonethg/qatest/releases/latest/download/latest.json",
+    "https://raw.githubusercontent.com/Simonethg/qatest/main/latest.json",
 ];
 
 #[derive(Debug, Deserialize)]
@@ -47,7 +46,7 @@ pub fn target_triple() -> anyhow::Result<String> {
 }
 
 pub fn fetch_manifest() -> anyhow::Result<Manifest> {
-    if let Ok(url) = std::env::var("QAT_MANIFEST_URL") {
+    if let Ok(url) = std::env::var("QATEST_MANIFEST_URL") {
         return fetch_url(&url);
     }
     let mut last = None;
@@ -90,7 +89,7 @@ pub fn run_update() -> anyhow::Result<()> {
         bail!("invalid sha256 in manifest");
     }
 
-    eprintln!("qat update  v{} → v{}  {target}", VERSION, manifest.version);
+    eprintln!("qatest update  v{} → v{}  {target}", VERSION, manifest.version);
     let tmp = tempfile_path(&target)?;
     download(&url, &tmp)?;
     let actual = sha256_file(&tmp)?;
@@ -101,7 +100,7 @@ pub fn run_update() -> anyhow::Result<()> {
 
     let paths = Paths::resolve()?;
     fs::create_dir_all(&paths.install_bin)?;
-    let dest = paths.install_bin.join("qat");
+    let dest = paths.install_bin.join("qatest");
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
@@ -110,7 +109,7 @@ pub fn run_update() -> anyhow::Result<()> {
     }
     #[cfg(not(unix))]
     {
-        let dest = paths.install_bin.join("qat.exe");
+        let dest = paths.install_bin.join("qatest.exe");
         fs::copy(&tmp, &dest)?;
     }
     let _ = fs::remove_file(&tmp);
@@ -120,12 +119,12 @@ pub fn run_update() -> anyhow::Result<()> {
         manifest.protocol.max(PROTOCOL),
         manifest.endpoint_generation.max(ENDPOINT_GENERATION)
     );
-    eprintln!("ready. run 'qat' to get started.");
+    eprintln!("ready. run 'qatest' to get started.");
     Ok(())
 }
 
 fn tempfile_path(target: &str) -> anyhow::Result<PathBuf> {
-    let mut p = std::env::temp_dir().join(format!("qat-update-{}-{}", process::id(), target));
+    let mut p = std::env::temp_dir().join(format!("qatest-update-{}-{}", process::id(), target));
     if cfg!(windows) {
         p.set_extension("bin");
     }

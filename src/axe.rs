@@ -93,15 +93,15 @@ pub fn summarize(report: &AxeReport, viewport: &str, width: u32, path: PathBuf) 
 }
 
 pub fn report_path(cwd: &Path, width: u32) -> PathBuf {
-    cwd.join(".qat").join(format!("axe-{width}.json"))
+    cwd.join(".qatest").join(format!("axe-{width}.json"))
 }
 
-/// Runs axe-core CLI on the SUT. Scope with QAT_AXE_INCLUDE (CSS selector).
-/// qat does not wrap Playwright; this is the a11y gate only.
+/// Runs axe-core CLI on the SUT. Scope with QATEST_AXE_INCLUDE (CSS selector).
+/// qatest does not wrap Playwright; this is the a11y gate only.
 pub fn run(cwd: &Path, url: &str) -> anyhow::Result<Vec<AxeSummary>> {
     let npx = which::which("npx").context("npx not on PATH — install Node, or run the recipe in the Tests pane")?;
-    std::fs::create_dir_all(cwd.join(".qat"))?;
-    let include = std::env::var("QAT_AXE_INCLUDE").ok();
+    std::fs::create_dir_all(cwd.join(".qatest"))?;
+    let include = std::env::var("QATEST_AXE_INCLUDE").ok();
     let mut out = Vec::new();
     for (w, h, name) in VIEWPORTS {
         let dest = report_path(cwd, *w);
@@ -159,7 +159,7 @@ pub fn load_summaries(cwd: &Path) -> Vec<AxeSummary> {
 
 pub fn format_summaries(rows: &[AxeSummary]) -> String {
     if rows.is_empty() {
-        return "axe: no reports yet. run `qat axe --url URL` (390 and 1440, scoped to the changed component).".into();
+        return "axe: no reports yet. run `qatest axe --url URL` (390 and 1440, scoped to the changed component).".into();
     }
     let mut lines = Vec::new();
     for s in rows {

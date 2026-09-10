@@ -7,7 +7,7 @@
       "id": "E-001",
       "name": "spec exists",
       "kind": "file_exists",
-      "path": ".qat/spec.md",
+      "path": ".qatest/spec.md",
       "traces": ["A-001"],
       "threshold": 1.0
     },
@@ -15,7 +15,7 @@
       "id": "E-002",
       "name": "spec approved before review",
       "kind": "file_contains",
-      "path": ".qat/spec.md",
+      "path": ".qatest/spec.md",
       "contains": "status: approved",
       "traces": ["A-001"],
       "threshold": 1.0
@@ -24,7 +24,7 @@
       "id": "E-003",
       "name": "acceptance IDs present",
       "kind": "file_matches",
-      "path": ".qat/spec.md",
+      "path": ".qatest/spec.md",
       "pattern": "A-00[0-9]",
       "traces": ["A-001", "A-002", "A-003"],
       "threshold": 1.0

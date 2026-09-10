@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>qatest — the agent runtime for QA</title>
+  <meta name="description" content="qatest is the agent runtime for QA. Same install as an agent multiplexer. A workspace that already knows spec, tests, evals, and review." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Kanit:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f5f0e8;
+      --gold: #f0b000;
+      --muted: #8a857a;
+      --navy: #1d2047;
+      --teal: #4cffee;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 4.5rem 1.25rem 3rem;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.75rem;
+    }
+    h1 span { color: var(--gold); }
+    .lede {
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 2rem;
+    }
+    pre {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      color: var(--gold);
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      font-size: 0.92rem;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 2rem 0 1rem;
+    }
+    .tabs b {
+      border: 1px solid var(--gold);
+      color: var(--ink);
+      background: var(--gold);
+      padding: 0.25rem 0.55rem;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+    .tabs span {
+      border: 1px solid #333;
+      color: var(--paper);
+      padding: 0.25rem 0.55rem;
+      font-size: 0.8rem;
+    }
+    p { line-height: 1.55; color: var(--paper); }
+    a { color: var(--gold); }
+    footer {
+      margin-top: 3.5rem;
+      padding: 0.85rem 1rem;
+      background: var(--navy);
+      color: var(--teal);
+      font-family: Kanit, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .fine { color: var(--muted); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>qatest is the <span>agent runtime for QA</span></h1>
+    <p class="lede">Same install as an agent multiplexer. A workspace that already knows spec, tests, evals, and review. Not the Intel accelerator. Not the Qt tester.</p>
+    <pre><code>curl -fsSL https://raw.githubusercontent.com/Simonethg/qatest/main/install.sh | sh
+qatest</code></pre>
+    <div class="tabs" aria-label="Default workspace tabs">
+      <b>Spec</b><span>Code</span><span>App</span><span>Tests</span><span>Review</span>
+    </div>
+    <p>Claude, Cursor, Playwright, and pytest run in real panes. qatest does not wrap them. Detach keeps them running.</p>
+    <p class="fine">Source-available. Use it. Do not sell it. <a href="https://github.com/Simonethg/qatest">github.com/Simonethg/qatest</a></p>
+  </main>
+  <footer>Powered by AcademiaQA</footer>
+</body>
+</html>

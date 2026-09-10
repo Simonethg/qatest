@@ -59,11 +59,11 @@ impl EvalReport {
 }
 
 pub fn evals_path(cwd: &Path) -> PathBuf {
-    cwd.join(".qat").join("evals.json")
+    cwd.join(".qatest").join("evals.json")
 }
 
 pub fn results_path(cwd: &Path) -> PathBuf {
-    cwd.join(".qat").join("eval-results.json")
+    cwd.join(".qatest").join("eval-results.json")
 }
 
 pub fn load_or_init(cwd: &Path) -> anyhow::Result<EvalFile> {
@@ -86,7 +86,7 @@ pub fn run(cwd: &Path) -> anyhow::Result<EvalReport> {
         failed,
         results,
     };
-    std::fs::create_dir_all(cwd.join(".qat"))?;
+    std::fs::create_dir_all(cwd.join(".qatest"))?;
     std::fs::write(results_path(cwd), serde_json::to_string_pretty(&report)?)?;
     Ok(report)
 }
@@ -189,8 +189,8 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        let dir = std::env::temp_dir().join(format!("qat-eval-{n}"));
-        std::fs::create_dir_all(dir.join(".qat")).unwrap();
+        let dir = std::env::temp_dir().join(format!("qatest-eval-{n}"));
+        std::fs::create_dir_all(dir.join(".qatest")).unwrap();
         crate::spec::init(&dir).unwrap();
         let report = run(&dir).unwrap();
         assert!(report.results.iter().any(|r| r.id == "E-001" && r.passed));

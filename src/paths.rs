@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-/// XDG-style paths. State lives in ~/.local/share/qat — no Postgres.
+/// XDG-style paths. State lives in ~/.local/share/qatest — no Postgres.
 #[derive(Debug, Clone)]
 pub struct Paths {
     pub data: PathBuf,
@@ -12,14 +12,14 @@ pub struct Paths {
 
 impl Paths {
     pub fn resolve() -> anyhow::Result<Self> {
-        let data = if let Some(custom) = std::env::var_os("QAT_DATA_DIR") {
+        let data = if let Some(custom) = std::env::var_os("QATEST_DATA_DIR") {
             PathBuf::from(custom)
         } else {
             dirs::data_local_dir()
                 .unwrap_or_else(|| PathBuf::from(".").join(".local").join("share"))
-                .join("qat")
+                .join("qatest")
         };
-        let install_bin = if let Some(custom) = std::env::var_os("QAT_INSTALL_DIR") {
+        let install_bin = if let Some(custom) = std::env::var_os("QATEST_INSTALL_DIR") {
             PathBuf::from(custom)
         } else {
             dirs::home_dir()
@@ -28,9 +28,9 @@ impl Paths {
                 .join("bin")
         };
         Ok(Self {
-            socket: data.join("qat.sock"),
-            pid: data.join("qat.pid"),
-            log: data.join("qat.log"),
+            socket: data.join("qatest.sock"),
+            pid: data.join("qatest.pid"),
+            log: data.join("qatest.log"),
             data,
             install_bin,
         })
@@ -41,8 +41,8 @@ impl Paths {
         Ok(())
     }
 
-    pub fn workspace_dot_qat(cwd: &Path) -> PathBuf {
-        cwd.join(".qat")
+    pub fn workspace_dot_qatest(cwd: &Path) -> PathBuf {
+        cwd.join(".qatest")
     }
 }
 
