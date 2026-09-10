@@ -1,0 +1,82 @@
+# Build
+/target/
+/dist/
+/build/
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+*.a
+
+# Rust / Cargo
+**/*.rs.bk
+.cargo-ok
+
+# Installer artifacts
+/latest.json
+*.tar.gz
+*.zip
+sha256sums.txt
+
+# Secrets and local env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+secrets.json
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Node (landing or docs tooling, if added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python helpers
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Tests / coverage / playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+
+# Local agent / Cursor
+.cursor/
+.claude/
+
+# Internal research dumps — not part of the public product
+Que se necesita para construir un harness_ Para ia.md
