@@ -40,3 +40,5 @@ There is no cloud WebSocket in the MVP. Detach does not kill occupants. `qatest 
 ## Evals vs suite (lesson 3.1 / 4.3)
 
 The suite is deterministic (Playwright, pytest). Evals score an agent or model against a threshold (`.qatest/evals.json`). Both run in Tests. Review reads both result files. Changing a system prompt without evals is out of process.
+
+TypeSafe System One (Jev) is the optional semantic oracle for kinds `typesafe` in `evals.json`. File/command evals stay local. TypeSafe questions run in **one** HTTP call (spec testable, axe location, evidence pack). `TYPESAFE_API_KEY` is required; without it those cases SKIP and do not fail the harness. Critical/serious axe findings still **block** Review — TypeSafe may add an observation (`shared_chrome` vs `in_component`) but cannot clear the ADA gate.

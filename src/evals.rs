@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
 
+use crate::typesafe;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EvalFile {
     pub version: String,
@@ -28,6 +30,21 @@ pub struct EvalCase {
     pub traces: Vec<String>,
     #[serde(default = "one")]
     pub threshold: f64,
+    /// noul | choice | score — only for kind = "typesafe"
+    #[serde(default)]
+    pub typesafe_type: Option<String>,
+    #[serde(default)]
+    pub instructions: Option<String>,
+    #[serde(default)]
+    pub criteria: Option<serde_json::Value>,
+    /// For choice evals: score = probability of this option.
+    #[serde(default)]
+    pub expected: Option<String>,
+    #[serde(default)]
+    pub min_confidence: Option<f64>,
+    /// Which evidence to pack: spec, axe, review. Empty = spec + axe.
+    #[serde(default)]
+    pub state_from: Vec<String>,
 }
 
 fn one() -> f64 {
@@ -41,6 +58,8 @@ pub struct EvalResult {
     pub score: f64,
     pub threshold: f64,
     pub passed: bool,
+    #[serde(default)]
+    pub skipped: bool,
     pub traces: Vec<String>,
     pub detail: String,
 }
@@ -54,7 +73,25 @@ pub struct EvalReport {
 
 impl EvalReport {
     pub fn all_passed(&self) -> bool {
-        self.failed == 0 && !self.results.is_empty()
+        let active: Vec<_> = self.results.iter().filter(|r| !r.skipped).collect();
+        !active.is_empty() && active.iter().all(|r| r.passed)
+    }
+
+    pub fn typesafe_notes(&self) -> Vec<String> {
+        self.results
+            .iter()
+            .filter(|r| r.id.starts_with("E-") && (r.detail.contains("noul=") || r.detail.contains("choice=") || r.detail.contains("score=") || r.skipped && r.detail.contains("TypeSafe")))
+            .map(|r| {
+                let mark = if r.skipped {
+                    "skip"
+                } else if r.passed {
+                    "ok"
+                } else {
+                    "fail"
+                };
+                format!("TypeSafe {} {}: {}", r.id, mark, r.detail)
+            })
+            .collect()
     }
 }
 
@@ -75,12 +112,28 @@ pub fn load_or_init(cwd: &Path) -> anyhow::Result<EvalFile> {
 
 pub fn run(cwd: &Path) -> anyhow::Result<EvalReport> {
     let file = load_or_init(cwd)?;
+    let typesafe_cases: Vec<&EvalCase> = file.evals.iter().filter(|c| typesafe::is_typesafe(c)).collect();
+    let answers = if !typesafe_cases.is_empty() && typesafe::should_call() {
+        match typesafe::evaluate(cwd, &typesafe_cases) {
+            Ok(resp) => {
+                let _ = std::fs::write(
+                    typesafe::answers_path(cwd),
+                    serde_json::to_string_pretty(&resp)?,
+                );
+                Some(resp)
+            }
+            Err(e) => return Err(e).context("TypeSafe evals (set QATEST_TYPESAFE=0 to skip)"),
+        }
+    } else {
+        None
+    };
+
     let mut results = Vec::new();
     for case in &file.evals {
-        results.push(run_case(cwd, case)?);
+        results.push(run_case(cwd, case, answers.as_ref())?);
     }
-    let passed = results.iter().filter(|r| r.passed).count();
-    let failed = results.len() - passed;
+    let passed = results.iter().filter(|r| r.passed && !r.skipped).count();
+    let failed = results.iter().filter(|r| !r.passed && !r.skipped).count();
     let report = EvalReport {
         passed,
         failed,
@@ -91,7 +144,14 @@ pub fn run(cwd: &Path) -> anyhow::Result<EvalReport> {
     Ok(report)
 }
 
-fn run_case(cwd: &Path, case: &EvalCase) -> anyhow::Result<EvalResult> {
+fn run_case(
+    cwd: &Path,
+    case: &EvalCase,
+    typesafe_resp: Option<&typesafe::SystemOneResponse>,
+) -> anyhow::Result<EvalResult> {
+    if typesafe::is_typesafe(case) {
+        return Ok(run_typesafe(case, typesafe_resp));
+    }
     let (score, detail) = match case.kind.as_str() {
         "file_exists" => {
             let p = cwd.join(case.path.as_deref().unwrap_or(""));
@@ -141,9 +201,50 @@ fn run_case(cwd: &Path, case: &EvalCase) -> anyhow::Result<EvalResult> {
         score,
         threshold: case.threshold,
         passed,
+        skipped: false,
         traces: case.traces.clone(),
         detail,
     })
+}
+
+fn run_typesafe(case: &EvalCase, resp: Option<&typesafe::SystemOneResponse>) -> EvalResult {
+    let skip = || EvalResult {
+        id: case.id.clone(),
+        name: case.name.clone(),
+        score: 0.0,
+        threshold: case.threshold,
+        passed: false,
+        skipped: true,
+        traces: case.traces.clone(),
+        detail: typesafe::skip_reason(),
+    };
+    let Some(resp) = resp else {
+        return skip();
+    };
+    let Some(answer) = resp.answers.get(&case.id) else {
+        return EvalResult {
+            id: case.id.clone(),
+            name: case.name.clone(),
+            score: 0.0,
+            threshold: case.threshold,
+            passed: false,
+            skipped: false,
+            traces: case.traces.clone(),
+            detail: format!("TypeSafe response missing answer {}", case.id),
+        };
+    };
+    let mapped = typesafe::map_answer(case, answer);
+    let passed = mapped.score + f64::EPSILON >= case.threshold;
+    EvalResult {
+        id: case.id.clone(),
+        name: case.name.clone(),
+        score: mapped.score,
+        threshold: case.threshold,
+        passed,
+        skipped: false,
+        traces: case.traces.clone(),
+        detail: mapped.detail,
+    }
 }
 
 fn regex_has(s: &str, pat: &str) -> bool {
@@ -164,7 +265,13 @@ pub fn format_report(report: &EvalReport) -> String {
         report.passed, report.failed
     )];
     for r in &report.results {
-        let mark = if r.passed { "PASS" } else { "FAIL" };
+        let mark = if r.skipped {
+            "SKIP"
+        } else if r.passed {
+            "PASS"
+        } else {
+            "FAIL"
+        };
         lines.push(format!(
             "  {mark}  {}  {}  score={:.2}/{:.2}  {}  traces={}",
             r.id,
@@ -195,6 +302,10 @@ mod tests {
         let report = run(&dir).unwrap();
         assert!(report.results.iter().any(|r| r.id == "E-001" && r.passed));
         assert!(report.results.iter().any(|r| r.id == "E-002" && !r.passed));
+        assert!(report
+            .results
+            .iter()
+            .any(|r| r.id == "E-004" && r.skipped && r.detail.contains("TypeSafe")));
         let _ = std::fs::remove_dir_all(dir);
     }
 }

@@ -90,6 +90,11 @@ pub fn compile(
     if evals.is_none() {
         observations.push("no eval-results.json yet — run qatest evals run".into());
     }
+    if let Some(ev) = evals {
+        for note in ev.typesafe_notes() {
+            observations.push(note);
+        }
+    }
 
     let mut axe_block = false;
     if axe.is_empty() {
@@ -99,7 +104,7 @@ pub fn compile(
         if s.blocks_review() {
             axe_block = true;
             blockers.push(format!(
-                "axe {} {}px: {} critical, {} serious (WCAG 2.2 AA)",
+                "axe {} {}px: {} critical, {} serious (WCAG 2.2 AA) — TypeSafe cannot unblock this",
                 s.viewport, s.width, s.critical, s.serious
             ));
         }
@@ -179,6 +184,7 @@ pub fn space_state(report: &ReviewReport) -> AgentState {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::evals::{EvalReport, EvalResult};
     use crate::spec::parse;
     use std::path::Path;
 
@@ -198,5 +204,32 @@ mod tests {
         let report = compile(Some(&spec), None, &[], &human);
         assert_eq!(report.verdict, Verdict::Ready);
         assert!(report.observations.iter().any(|o| o.contains("axe")));
+    }
+
+    #[test]
+    fn typesafe_choice_is_observation_and_does_not_clear_gates() {
+        let spec = parse(Path::new("s"), "status: approved\n- A-001: thing\n");
+        let evals = EvalReport {
+            passed: 1,
+            failed: 0,
+            results: vec![EvalResult {
+                id: "E-005".into(),
+                name: "axe findings vs changed component".into(),
+                score: 1.0,
+                threshold: 0.0,
+                passed: true,
+                skipped: false,
+                traces: vec!["A-002".into()],
+                detail: "choice=shared_chrome confidence=0.800".into(),
+            }],
+        };
+        let mut human = HumanGate::default();
+        human.approved = true;
+        let report = compile(Some(&spec), Some(&evals), &[], &human);
+        assert_eq!(report.verdict, Verdict::Ready);
+        assert!(report
+            .observations
+            .iter()
+            .any(|o| o.contains("shared_chrome")));
     }
 }

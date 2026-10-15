@@ -13,6 +13,7 @@ pub mod spec;
 pub mod tabs;
 pub mod tests_recipe;
 pub mod tui;
+pub mod typesafe;
 pub mod update;
 pub mod workspace;
 

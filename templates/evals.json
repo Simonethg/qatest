@@ -28,6 +28,53 @@
       "pattern": "A-00[0-9]",
       "traces": ["A-001", "A-002", "A-003"],
       "threshold": 1.0
+    },
+    {
+      "id": "E-004",
+      "name": "spec is testable",
+      "kind": "typesafe",
+      "typesafe_type": "noul",
+      "instructions": "Is `spec.raw` a testable specification? Yes means a QA engineer could design cases from the acceptance criteria without guessing unstated behavior. Placeholder text such as 'Describe the observable result' is not testable.",
+      "criteria": {
+        "true": "Acceptance criteria are specific, observable, and unambiguous.",
+        "false": "Criteria are placeholders, vague, or missing an oracle."
+      },
+      "state_from": ["spec"],
+      "traces": ["A-001"],
+      "threshold": 0.65
+    },
+    {
+      "id": "E-005",
+      "name": "axe findings vs changed component",
+      "kind": "typesafe",
+      "typesafe_type": "choice",
+      "instructions": "Where do the critical and serious findings in `axe` belong relative to `spec.component`? TypeSafe does not override axe impact: this choice is an observation for the reviewer. If `axe` is missing, choose no_findings.",
+      "criteria": {
+        "in_component": "Critical or serious findings sit in the changed component named in spec.component.",
+        "shared_chrome": "Findings sit in shared chrome (header, footer, theme, cookie banner) rather than the changed component.",
+        "false_positive": "Listed findings are not real WCAG issues for this SUT.",
+        "no_findings": "No axe reports, or no critical/serious findings to locate."
+      },
+      "state_from": ["spec", "axe"],
+      "min_confidence": 0.45,
+      "traces": ["A-002"],
+      "threshold": 0.0
+    },
+    {
+      "id": "E-006",
+      "name": "evidence pack ready for human review",
+      "kind": "typesafe",
+      "typesafe_type": "score",
+      "instructions": "How complete is this evidence pack for an ISO 20246 human review? Use `spec`, `axe`, and `policy`. Deterministic evals (E-001–E-003) already ran separately.",
+      "criteria": [
+        "Missing spec, acceptance criteria, or any axe scan — a human cannot review.",
+        "Pack exists but is incomplete or ambiguous (draft spec, unscanned viewport, or unscoped full-page axe noise).",
+        "Pack is complete enough for a human to approve or reject under WCAG 2.2 AA and ISTQB."
+      ],
+      "state_from": ["spec", "axe"],
+      "min_confidence": 0.4,
+      "traces": ["A-001", "A-002"],
+      "threshold": 1.0
     }
   ]
 }

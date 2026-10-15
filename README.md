@@ -72,7 +72,7 @@ qatest pane send <id> <text>
 qatest spec init        # write .qatest/spec.md from the ISTQB/29119 template
 qatest spec status
 qatest tests recipe     # print Playwright / pytest / axe / evals commands (does not wrap them)
-qatest evals run        # EvalHarness (score + threshold) from .qatest/evals.json
+qatest evals run        # EvalHarness: file checks + optional TypeSafe (Jev) semantic evals
 qatest axe --url URL    # axe-core at 390 and 1440, scoped when QATEST_AXE_INCLUDE is set
 qatest review status
 qatest review approve   # human-in-the-loop
@@ -85,6 +85,22 @@ Detach: `Ctrl+b` then `d`. The server keeps running. Tabs: click, or `Ctrl+1`…
 ## Brand
 
 Product UI: ink / paper with gold `#F0B000`. Footer always **Powered by AcademiaQA** (navy `#1D2047`, teal `#4CFFEE`). See [docs/brand.md](docs/brand.md).
+
+## TypeSafe semantic evals (optional)
+
+`qatest evals run` still does the deterministic file checks (E-001–E-003). If `TYPESAFE_API_KEY` is set, it also sends **one** System One request with three questions against the same evidence pack (spec + axe summaries):
+
+| ID | Primitive | What code does with the answer |
+| --- | --- | --- |
+| E-004 | Noul | Spec testable? Fail the harness if probability &lt; 0.65. |
+| E-005 | Choice | Where do axe blockers sit (`in_component` / `shared_chrome` / `false_positive` / `no_findings`)? Informational (threshold 0). Review shows it as an observation. |
+| E-006 | Score | Is the evidence pack ready for a human? Fail if score &lt; 1.0 (missing pack). |
+
+Skip without a key, or set `QATEST_TYPESAFE=0`. Model override: `QATEST_TYPESAFE_MODEL` (default `jev-latest`). Raw answers: `.qatest/typesafe-answers.json`.
+
+TypeSafe does **not** generate tests, wrap Playwright, or clear WCAG critical/serious blockers.
+
+Get a key: [console.typesafe.ai](https://console.typesafe.ai). API: [docs.typesafe.ai](https://docs.typesafe.ai/api.md).
 
 ## Standards as gates
 

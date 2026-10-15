@@ -11,6 +11,9 @@ npx playwright test
 pytest -q
 
 # EvalHarness (score + threshold) — lesson 4.3
+# Semantic evals E-004–E-006 need TYPESAFE_API_KEY. Without it they SKIP.
+# They never replace Playwright/pytest and never unblock axe critical/serious.
+export TYPESAFE_API_KEY=...          # https://console.typesafe.ai
 qatest evals run
 
 # axe-core on the SUT, scoped, both required viewports

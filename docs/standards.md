@@ -18,7 +18,7 @@ Every standard qatest claims lives in a **tab or a gate**. If it has no gate, it
 | --- | --- |
 | ISTQB CTFL 4.0 | Spec template: objective, preconditions, acceptance, traceability. |
 | ISTQB CT-TAE | Tests tab hosts automation you already run; qatest does not replace the framework. |
-| ISTQB CT-AI v1.0 / CT-GenAI 2025 | Evals sit next to the suite (not instead of it). Agents are observed (`blocked/working/done/idle`), not trusted blindly. |
+| ISTQB CT-AI v1.0 / CT-GenAI 2025 | Evals sit next to the suite (not instead of it). Agents are observed (`blocked/working/done/idle`), not trusted blindly. Optional TypeSafe (Jev) evals E-004–E-006 add calibrated probabilities; they skip without `TYPESAFE_API_KEY` and cannot override axe critical/serious. |
 | ISO/IEC/IEEE 29119-1:2022 concepts | Vocabulary in Spec (`A#`, environment, oracle). |
 | ISO/IEC/IEEE 29119-2:2021 process | The five tabs **are** the process. |
 | ISO/IEC/IEEE 29119-3:2021 documentation | `.qatest/spec.md` and Review evidence files. |

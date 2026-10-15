@@ -64,6 +64,12 @@ pub fn format_report(cwd: &Path) -> String {
     lines.push(format!(
         "plugins present: {plugins}/5  (optional — runtime works without them)"
     ));
+    lines.push(String::new());
+    if crate::typesafe::api_key().is_some() {
+        lines.push("TypeSafe: TYPESAFE_API_KEY is set — `qatest evals run` will call System One".into());
+    } else {
+        lines.push("TypeSafe: TYPESAFE_API_KEY unset — semantic evals E-004–E-006 SKIP".into());
+    }
     lines.join("\n")
 }
 
